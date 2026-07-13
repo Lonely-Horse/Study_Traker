@@ -1,0 +1,95 @@
+openapi: 3.0.0
+info:
+  title: Study-Traker API
+  version: 1.0.0
+  description: 学习检索助手
+servers:
+  - url: http://172.17.0.1:8082
+security:
+  - ApiKeyAuth: []
+
+paths:
+  /api/logs:
+    get:
+      summary: 查询原始日志信息
+      parameters:
+        - name: subject
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 查询成功
+    post:
+      summary: 新增日志信息
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudyLog'
+      responses:
+        '201':
+          description: 新增成功
+
+  /api/skill:
+    get:
+      summary: 查询学习进度摘要统计
+      responses:
+        '200':
+          description: 成功返还统计信息
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SkillResponse'
+
+components:
+  schemas:
+    StudyLog:
+      type: object
+      required:
+        - date
+        - subject
+        - theme
+        - duration
+        - challenge
+        - challenge_level
+      properties:
+        date:
+          type: string
+        subject:
+          type: string
+        theme:
+          type: string
+        duration:
+          type: integer
+        challenge:
+          type: string
+        challenge_level:
+          type: integer
+    SkillResponse:
+      type: object
+      required:
+        - count
+        - total_duration_min
+        - subjects
+        - logs
+      properties:
+        count:
+          type: integer
+        total_duration_min: 
+          type: integer
+        subjects:
+          type: array
+          items:
+            type: string
+        logs:
+          type: array
+          items:
+            $ref: '#/components/schemas/StudyLog'
+  securitySchemes:
+    ApiKeyAuth:
+      type: http
+      scheme: bearer
+
+

@@ -54,5 +54,21 @@
   "duration": 50,
   "challenge": "长难句",
   "challenge_level": 3
+ },
+ {
+  "date": "2026-06-30",
+  "subject": "高数",
+  "theme": "二重积分",
+  "duration": 80,
+  "challenge": "二重积分的计算",
+  "challenge_level": 4
+ },
+ {
+  "date": "2026-06-30",
+  "subject": "英语",
+  "theme": "词汇背诵记忆",
+  "duration": 120,
+  "challenge": "高频词汇背诵与记忆",
+  "challenge_level": 3
  }
 ]

@@ -19,6 +19,18 @@ var (
 func main() {
 	filename := "studylog.json"
 
+	Secret_Token_Key := os.Getenv("Secret_Token_Key")
+	if Secret_Token_Key == "" {
+		fmt.Printf("The Key Secret_Token_Key is empty")
+	}
+
+	logsHandler := func(w http.ResponseWriter, r *http.Request) {
+		HandlerLogs(w, r, filename)
+	}
+	skillHandler := func(w http.ResponseWriter, r *http.Request) {
+		HandlerSkill(w, r, filename)
+	}
+
 	var addr string
 	flag.StringVar(&addr, "addr", "127.0.0.1:8081", "地址")
 	flag.Parse()
@@ -38,13 +50,9 @@ func main() {
 		HandlerDashboard(w, r, filename)
 	})
 
-	mux.HandleFunc("/api/logs", func(w http.ResponseWriter, r *http.Request) {
-		HandlerLogs(w, r, filename)
-	})
+	mux.HandleFunc("/api/logs", AuthMiddleware(logsHandler, Secret_Token_Key))
 
-	mux.HandleFunc("/api/skill", func(w http.ResponseWriter, r *http.Request) {
-		HandlerSkill(w, r, filename)
-	})
+	mux.HandleFunc("/api/skill", AuthMiddleware(skillHandler, Secret_Token_Key))
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()

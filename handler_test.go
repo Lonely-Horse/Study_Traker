@@ -103,11 +103,52 @@ func TestHandlerPostlog(t *testing.T) {
 			if tt.body != "" {
 				body = strings.NewReader(tt.body)
 			}
-			req := httptest.NewRequest(http.MethodPost, "/api/logs", body)
+			req := httptest.NewRequest(tt.method, "/api/logs", body)
 			req.Header.Set("Content-Type", "application/json")
 			w := httptest.NewRecorder()
 			HandlerPostlog(w, req, tmpfile)
+		})
+	}
+}
 
+func TestFilterLogsBySubject(t *testing.T) {
+	test_logs := []StudyLog{
+		{Subject: "高数", Duration: 120},
+		{Subject: "英语", Duration: 100},
+		{Subject: "高数", Duration: 200},
+	}
+	tests := []struct {
+		name         string
+		subjectQuery string
+		wantlen      int
+	}{
+		{
+			name:         "Search the math",
+			subjectQuery: "高数",
+			wantlen:      2,
+		},
+		{
+			name:         "Search the English",
+			subjectQuery: "英语",
+			wantlen:      1,
+		},
+		{
+			name:         "Search the P.E",
+			subjectQuery: "体育",
+			wantlen:      0,
+		},
+		{
+			name:         "Search empty string subject",
+			subjectQuery: "",
+			wantlen:      3,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := FilterLogsBySubject(test_logs, tt.subjectQuery)
+			if len(result) != tt.wantlen {
+				t.Errorf("got length %d, want %d", tt.wantlen, len(result))
+			}
 		})
 	}
 }

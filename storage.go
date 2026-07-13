@@ -110,3 +110,18 @@ func AppendLog(filename string, newlog StudyLog) error {
 
 	return nil
 }
+func FilterLogsBySubject(logs []StudyLog, subject string) []StudyLog {
+
+	if logs == nil || subject == "" {
+		return logs
+	}
+
+	tmplog := make([]StudyLog, 0, len(logs))
+
+	for _, log := range logs {
+		if log.Subject == subject {
+			tmplog = append(tmplog, log)
+		}
+	}
+	return tmplog
+}

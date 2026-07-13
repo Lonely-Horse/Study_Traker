@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"io"
 	"net/http"
+	"strings"
 )
 
 func HandlerDashboard(w http.ResponseWriter, r *http.Request, filename string) {
@@ -45,6 +46,8 @@ func HandlerGetLogs(w http.ResponseWriter, r *http.Request, filename string) {
 		return
 	}
 
+	subjectQuery := r.URL.Query().Get("subject")
+
 	logs, err := ReadLogsSafe(filename)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -52,8 +55,10 @@ func HandlerGetLogs(w http.ResponseWriter, r *http.Request, filename string) {
 		return
 	}
 
+	logs_Query := FilterLogsBySubject(logs, subjectQuery)
+
 	encoder := json.NewEncoder(w)
-	err = encoder.Encode(logs)
+	err = encoder.Encode(logs_Query)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(`{"error":"Failed encode the logs"}`))
@@ -141,5 +146,27 @@ func HandlerSkill(w http.ResponseWriter, r *http.Request, filename string) {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(`{"error":"Failed encode the logs"}`))
 		return
+	}
+}
+
+func AuthMiddleware(next http.HandlerFunc, token string) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if token == "" {
+			next(w, r)
+			return
+		}
+		authhead := r.Header.Get("Authorization")
+		if !strings.HasPrefix(authhead, "Bearer ") {
+			w.WriteHeader(http.StatusUnauthorized)
+			w.Write([]byte(`{"error":"unauthorized"}`))
+			return
+		}
+		authtoken := strings.TrimPrefix(authhead, "Bearer ")
+		if authtoken != token {
+			w.WriteHeader(http.StatusUnauthorized)
+			w.Write([]byte(`{"error":"unauthorized"}`))
+			return
+		}
+		next(w, r)
 	}
 }
