@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Dashboard</title>
+</head>
+<body>
+    <h1>学习记录</h1>
+        <hr>
+    {{range .}}
+        <p>日期: {{.Date}}</p>
+        <p>学科：{{.Subject}}</p>
+        <p>主题：{{.Theme}}</p>
+        <p>学习时长: {{.Duration}}</p>
+        <p>问题：{{.Challenge}}</p>
+        <p>困难等级：{{.ChallengeLevel}}</p>
+        <hr>
+    {{else}}
+        <p>暂无日志记录<p>
+    {{end}}
+</body>
+</html>

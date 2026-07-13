@@ -1,0 +1,16 @@
+[
+  {
+    "date": "2026-06-22",
+    "subject": "高数",
+    "theme": "微分方程",
+    "duration": 120,
+    "challenge_level": 3
+  },
+  {
+    "date": "2026-06-23",
+    "subject": "英语",
+    "theme": "单词",
+    "duration": 60,
+    "challenge_level": 2
+  }
+]
