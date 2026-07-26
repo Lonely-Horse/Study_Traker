@@ -1,6 +1,6 @@
 services:
   study-traker:
-    image: 100.87.250.21:5000/study-traker:1.0.0
+    image: 100.87.250.21:5000/study-traker:latest
     container_name: study-traker
     ports:
       - "8082:8082"
