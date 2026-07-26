@@ -110,6 +110,7 @@ func AppendLog(filename string, newlog StudyLog) error {
 
 	return nil
 }
+
 func FilterLogsBySubject(logs []StudyLog, subject string) []StudyLog {
 
 	if logs == nil || subject == "" {

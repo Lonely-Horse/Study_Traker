@@ -3,22 +3,170 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Dashboard</title>
+    <title>Study Tracker Dashboard</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --border-color: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-blue: #38bdf8;
+            --accent-purple: #c084fc;
+            --accent-green: #4ade80;
+            --tag-bg: #0f172a;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.25rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            border-color: var(--accent-blue);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .subject-tag {
+            background-color: rgba(56, 189, 248, 0.15);
+            color: var(--accent-blue);
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 0.25rem 0.6rem;
+            border-radius: 6px;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+        }
+
+        .date-text {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .theme-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+        }
+
+        .card-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+            background: var(--tag-bg);
+            padding: 0.5rem 0.75rem;
+            border-radius: 8px;
+        }
+
+        .meta-item span {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .challenge-box {
+            font-size: 0.85rem;
+            color: #cbd5e1;
+            background-color: rgba(15, 23, 42, 0.5);
+            padding: 0.6rem 0.8rem;
+            border-radius: 6px;
+            border-left: 3px solid var(--accent-purple);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            background-color: var(--card-bg);
+            border: 1px dashed var(--border-color);
+            border-radius: 12px;
+            color: var(--text-secondary);
+        }
+    </style>
 </head>
 <body>
-    <h1>学习记录</h1>
-        <hr>
-    {{range .}}
-        <p>日期: {{.Date}}</p>
-        <p>学科：{{.Subject}}</p>
-        <p>主题：{{.Theme}}</p>
-        <p>学习时长: {{.Duration}}</p>
-        <p>问题：{{.Challenge}}</p>
-        <p>困难等级：{{.ChallengeLevel}}</p>
-        <hr>
-    {{else}}
-        <p>暂无日志记录<p>
-    {{end}}
+    <div class="container">
+        <header>
+            <h1>📚 学习记录 Dashboard</h1>
+        </header>
+
+        <div class="grid">
+            {{range .}}
+            <div class="card">
+                <div class="card-header">
+                    <span class="subject-tag">{{.Subject}}</span>
+                    <span class="date-text">{{.Date}}</span>
+                </div>
+                <div class="theme-title">{{.Theme}}</div>
+                <div class="card-meta">
+                    <div class="meta-item">时长: <span>{{.Duration}} 分钟</span></div>
+                    <div class="meta-item">难度等级: <span>L{{.ChallengeLevel}}</span></div>
+                </div>
+                {{if .Challenge}}
+                <div class="challenge-box">
+                    💡 {{.Challenge}}
+                </div>
+                {{end}}
+            </div>
+            {{else}}
+            <div class="empty-state">
+                <p>暂无日志记录，开始记录你的第一条学习心得吧！</p>
+            </div>
+            {{end}}
+        </div>
+    </div>
 </body>
 </html>
