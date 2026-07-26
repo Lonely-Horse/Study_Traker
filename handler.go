@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"html/template"
-	"io"
 	"net/http"
 	"strings"
 )
@@ -68,7 +67,6 @@ func HandlerGetLogs(w http.ResponseWriter, r *http.Request, filename string) {
 
 func HandlerPostlog(w http.ResponseWriter, r *http.Request, filename string) {
 	var newlog StudyLog
-	var extra any
 
 	w.Header().Set("Content-Type", "application/json")
 	if r.Method != http.MethodPost {
@@ -82,13 +80,6 @@ func HandlerPostlog(w http.ResponseWriter, r *http.Request, filename string) {
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(`{"error":"The newlog can't decoder"}`))
-		return
-	}
-
-	err = decoder.Decode(&extra)
-	if err != io.EOF {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(`{"error":"Have some json not allowed"}`))
 		return
 	}
 
