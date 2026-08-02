@@ -2,7 +2,9 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
+	"io"
 	"os"
 	"sort"
 )
@@ -12,6 +14,9 @@ func ReadLogs(filename string) ([]StudyLog, error) {
 
 	file, err := os.Open(filename)
 	if err != nil {
+		if os.IsNotExist(err) {
+			return []StudyLog{}, nil
+		}
 		return nil, fmt.Errorf("failed to open %s:%w", filename, err)
 	}
 
@@ -20,6 +25,9 @@ func ReadLogs(filename string) ([]StudyLog, error) {
 	decoder := json.NewDecoder(file)
 	err = decoder.Decode(&logs)
 	if err != nil {
+		if errors.Is(err, io.EOF) {
+			return []StudyLog{}, nil
+		}
 		return nil, fmt.Errorf("failed decode the %s:%w", filename, err)
 	}
 	return logs, nil
@@ -33,34 +41,17 @@ func ReadLogsSafe(filename string) (logs []StudyLog, err error) {
 }
 
 func WriteLogs(filename string, logs []StudyLog) error {
-	tmpfile := filename + ".tmp"
-	tmp, err := os.Create(tmpfile)
+	file, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
 	if err != nil {
-		return fmt.Errorf("failed create the %s:%w", filename, err)
+		return fmt.Errorf("failed open/create %s:%w", filename, err)
 	}
+	defer file.Close()
 
-	encoder := json.NewEncoder(tmp)
+	encoder := json.NewEncoder(file)
 	encoder.SetIndent("", " ")
 	err = encoder.Encode(logs)
 	if err != nil {
-		tmp.Close()
-		err1 := os.Remove(tmpfile)
-		if err1 != nil {
-			return fmt.Errorf("failed remove the %s: %w", tmpfile, err1)
-		}
 		return fmt.Errorf("failed encode the %s: %w", filename, err)
-	}
-
-	err = tmp.Close()
-	if err != nil {
-		os.Remove(tmpfile)
-		return fmt.Errorf("failed close the %s: %w", tmpfile, err)
-	}
-
-	err = os.Rename(tmpfile, filename)
-	if err != nil {
-		os.Remove(tmpfile)
-		return fmt.Errorf("failed rename the %s to %s: %w", tmpfile, filename, err)
 	}
 
 	return nil

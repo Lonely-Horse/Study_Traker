@@ -18,6 +18,10 @@ var (
 
 func main() {
 	filename := "studylog.json"
+	// 如果在Docker环境或配置了数据目录，优先使用挂载目录下的文件
+	if _, err := os.Stat("/app/data"); err == nil {
+		filename = "/app/data/studylog.json"
+	}
 
 	Secret_Token_Key := os.Getenv("Secret_Token_Key")
 	if Secret_Token_Key == "" {

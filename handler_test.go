@@ -32,7 +32,7 @@ func TestHandlerGetlogs(t *testing.T) {
 			name:     "Use another file to try",
 			method:   http.MethodGet,
 			filename: "testdata/test_log.json",
-			wantCode: 500,
+			wantCode: 200,
 		},
 	}
 	for _, tt := range tests {
@@ -107,6 +107,9 @@ func TestHandlerPostlog(t *testing.T) {
 			req.Header.Set("Content-Type", "application/json")
 			w := httptest.NewRecorder()
 			HandlerPostlog(w, req, tmpfile)
+			if w.Code != tt.wantCode {
+				t.Errorf("test %s failed: got status %d, want %d, body: %s", tt.name, w.Code, tt.wantCode, w.Body.String())
+			}
 		})
 	}
 }

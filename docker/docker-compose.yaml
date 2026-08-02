@@ -7,7 +7,7 @@ services:
     environment:
       - Secret_Token_Key=${Secret_Token_Key}
     volumes:
-      - ../studylog.json:/app/studylog.json
+      - ../data:/app/data
     networks:
       - dify_net
     restart: unless-stopped
