@@ -4,7 +4,7 @@ info:
   version: 1.0.0
   description: 学习检索助手
 servers:
-  - url: http://study-traker:8082
+  - url: http://100.87.126.53:8082
 security:
   - ApiKeyAuth: []
 
