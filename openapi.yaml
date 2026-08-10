@@ -4,12 +4,12 @@ info:
   version: 1.0.0
   description: 学习检索助手
 servers:
-  - url: http://100.87.126.53:8082
+  - url: http://100.87.126.53:8085
 security:
   - ApiKeyAuth: []
 
 paths:
-  /api/logs:
+  /api/examprep/logs:
     get:
       summary: 查询原始日志信息
       parameters:
@@ -32,7 +32,7 @@ paths:
         '201':
           description: 新增成功
 
-  /api/skill:
+  /api/examprep/skill:
     get:
       summary: 查询学习进度摘要统计
       responses:
